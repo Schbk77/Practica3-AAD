@@ -2,6 +2,7 @@ package modelo;
 
 import hibernate.NewHibernateUtil;
 import hibernate.Inmuebles;
+import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -38,13 +39,15 @@ public class ModeloInmuebles {
         session.close();
     }
     
-    public static void insert(Inmuebles in){
+    public static long insert(Inmuebles in){
         Session session = NewHibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(in);
+        Long id = ((BigInteger) session.createSQLQuery("SELECT LAST_INSERT_ID()").uniqueResult()).longValue();
         session.getTransaction().commit();
         session.flush();
         session.close();
+        return id;
     }
     
     public static void edit(Inmuebles in){

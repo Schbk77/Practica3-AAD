@@ -21,6 +21,7 @@ public class Controlador extends HttpServlet {
             String destino = "index.html";          // A donde transfiero el control
             boolean forward = false;                // De que manera transfiero el control
             String op, target, action;
+            boolean noredirect = false;
 
             // Decidir destino
             target = request.getParameter("target");
@@ -46,8 +47,26 @@ public class Controlador extends HttpServlet {
                 inmueble.setDireccion(request.getParameter("direccion"));
                 inmueble.setTipo(request.getParameter("tipo"));
                 inmueble.setPrecio(Integer.valueOf(request.getParameter("precio")));
+                if(!request.getParameter("usuario").equals("null")){
+                    inmueble.setUsuario(request.getParameter("usuario"));
+                }
                 ModeloInmuebles.insert(inmueble);
-            } else if (target.equals("inmueble") && op.equals("delete") && action.equals("op")) {
+            } else if (target.equals("inmueble") && op.equals("insert") && action.equals("opa")) {
+                // INSERTAR INMUEBLE DESDE ANDROID
+                noredirect=true;
+                Inmuebles inmueble = new Inmuebles();
+                inmueble.setLocalidad(request.getParameter("localidad"));
+                inmueble.setDireccion(request.getParameter("direccion"));
+                inmueble.setTipo(request.getParameter("tipo"));
+                inmueble.setPrecio(Integer.valueOf(request.getParameter("precio")));
+                if(!request.getParameter("usuario").equals("null")){
+                    inmueble.setUsuario(request.getParameter("usuario"));
+                }
+                long id = ModeloInmuebles.insert(inmueble);
+                try (PrintWriter respuesta = response.getWriter()) {
+                    out.println(id);
+                }   
+            }else if (target.equals("inmueble") && op.equals("delete") && action.equals("op")) {
                 // BORRAR DE TABLA
                 forward = false;
                 destino = "control?target=inmueble&op=select&action=view";
@@ -70,16 +89,19 @@ public class Controlador extends HttpServlet {
                 inmueble.setPrecio(Integer.parseInt(request.getParameter("precio")));
                 ModeloInmuebles.edit(inmueble);
             } else if (target.equals("inmueble") && op.equals("upload") && action.equals("view")) {
+                // VER FORMULARIO SUBIDA
                 forward = true;
                 destino = "WEB-INF/inmueble/upload.jsp";
                 request.setAttribute("inmueble", ModeloInmuebles.get(request.getParameter("id")));
             }
 
-            // Transferir el control
-            if (forward) {
-                request.getRequestDispatcher(destino).forward(request, response);
-            } else {
-                response.sendRedirect(destino);
+            if(!noredirect){
+                // Transferir el control
+                if (forward) {
+                    request.getRequestDispatcher(destino).forward(request, response);
+                } else {
+                    response.sendRedirect(destino);
+                }  
             }
         }
     }

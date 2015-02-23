@@ -22,6 +22,7 @@
                     <input type="text" name="tipo" value="" /><br/>
                     <label for="precio">Precio</label>
                     <input type="number" name="precio" value="" /><br/>
+                    <input type="hidden" name="usuario" value="null"/>
                     <input type="hidden" name="target" value="inmueble" />
                     <input type="hidden" name="op" value="insert" />
                     <input type="hidden" name="action" value="op" />

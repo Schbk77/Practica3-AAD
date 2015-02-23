@@ -59,14 +59,20 @@ public class Controladorsubir extends HttpServlet {
             error = true;
         }
 
-        /*try (PrintWriter out = response.getWriter()) {
-         if (error) {
-         out.println("{\"r\":0)}");
-         } else {
-         out.println("{\"r\":1)}");
-         }
-         }*/
-        response.sendRedirect("control?target=inmueble&op=select&action=view");
+        String redirect = request.getParameter("redirect");
+        if (redirect != null) {
+            if (!redirect.equals("false")) {
+                response.sendRedirect("control?target=inmueble&op=select&action=view");
+            } else {
+                try (PrintWriter out = response.getWriter()) {
+                    if (error) {
+                        out.println("0");
+                    } else {
+                        out.println("1");
+                    }
+                }
+            }
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
